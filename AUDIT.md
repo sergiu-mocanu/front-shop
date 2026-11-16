@@ -115,5 +115,10 @@ animation on the placeholders: decorative animation is what eco-design removes.
 | 4c | Perf — LCP chain hints (extra, outside the exercise) | `perf: preload product data, preconnect to image host` | `<link rel="preload" as="fetch">` for `products.json` (fetched alongside the JS instead of after it) and `<link rel="preconnect">` to `images.unsplash.com` | `products.json` request start (observed) | ~40 ms after the JS | with or before the JS |
 | | | | | First image download (observed, unthrottled) | 59–71 ms | 11–16 ms |
 | | | | | LCP `/` when the image is the LCP element | 2.8 s | 2.8 s (no lab gain) |
-| 5 | Accessibility | | | | | |
+| 5 | Accessibility | `a11y: contrast, accessible names, one link per card` | `--muted` darkened `#78817b` → `#676f69` (all grey text); cart button: visible text + hidden " article(s)" instead of an `aria-label` that didn't contain it; product image links (duplicates of the title links) out of the tab order and hidden from screen readers; "Ajouter au panier" buttons name their product (hidden text) | Contrast of grey text, page · intro band | 3.98 · 3.53 : 1 | 5.13 · 4.56 : 1 (WCAG AA: 4.5) |
+| | | | | Lighthouse contrast failures `/` · `/products` | 10 · 10 elements | 1 · 1 (the logo, see notes) |
+| | | | | "Name doesn't contain visible text" failures `/` · `/products` | 5 · 7 | 0 · 0 |
+| | | | | Keyboard tab stops `/` · `/products` | 19 · 22 | 15 · 16 |
+| | | | | Distinct names among "Ajouter au panier" buttons on `/products` | 1 (all identical) | 5 (one per in-stock product) |
+| | | | | A11y score `/` · `/products` | 95 · 95 | 95 · 95 (see notes) |
 | 6 | Eco-design | | | | | |

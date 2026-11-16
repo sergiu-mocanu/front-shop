@@ -26,10 +26,11 @@ function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
       <Link
         className="cart-button"
         to={activePage === 'home' || activePage === 'products' ? '#basket' : '/#basket'}
-        aria-label={`Voir le panier, ${cartCount} article(s)`}
       >
-        <span>Panier</span>
+        {/* Accessible name "Panier 3 article(s)" starts with the visible text, for voice control. */}
+        <span>Panier</span>{' '}
         <span className="cart-count">{cartCount}</span>
+        <span className="visually-hidden"> article(s)</span>
       </Link>
     </header>
   )

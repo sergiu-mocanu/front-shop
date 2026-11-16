@@ -15,7 +15,9 @@ type ProductCardProps = {
 function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
   return (
     <article className="product-card">
-      <Link className="product-image-link" to={`/products/${product.id}`} aria-label={`Voir ${product.name}`}>
+      {/* Duplicate of the title link, kept for mouse/touch: out of the tab order and hidden from
+          screen readers, so each card has one link. */}
+      <Link className="product-image-link" to={`/products/${product.id}`} tabIndex={-1} aria-hidden="true">
         <div className="product-image-wrap">
           {product.image && (
             <ProductImage
@@ -48,6 +50,7 @@ function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
             onClick={() => onAddToCart(product.id)}
           >
             Ajouter au panier
+            <span className="visually-hidden"> : {product.name}</span>
             <span aria-hidden="true">＋</span>
           </button>
         </div>

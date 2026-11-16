@@ -135,7 +135,7 @@ code {
   --body: 'DM Sans', sans-serif;
   --display: 'Fraunces', Georgia, serif;
   --ink: #202925;
-  --muted: #78817b;
+  --muted: #676f69; /* was #78817b: 3.98:1, now 5.13:1 on the page and 4.56:1 on the intro band (WCAG AA: 4.5) */
   --line: #e8e9e2;
   --coral: #d7654d;
   --green: #3d705b;
