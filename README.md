@@ -1,6 +1,6 @@
-# Maison Moderne — départ d'exercice
+# Maison Moderne
 
-Squelette React + TypeScript pour commencer les exercices du Jour 1. L'écran conserve la direction graphique de la boutique comme repère; les types métier, le rendu des articles, l'ajout au panier, le hook de chargement et le module Commandes restent à construire. Les données des six produits sont prêtes dans `public/data/products.json`.
+Boutique de démonstration construite avec React et TypeScript strict. Le catalogue et les commandes sont chargés depuis les fichiers JSON statiques de `public/data/` ; aucun serveur API n'est nécessaire.
 
 ## Démarrer
 
@@ -9,12 +9,21 @@ npm install
 npm run dev
 ```
 
-Le mode strict est activé dans `tsconfig.app.json`. Pour vérifier le projet :
+## Parcours disponibles
+
+- `/` : accueil et sélection de produits
+- `/products` : catalogue complet
+- `/products/:id` : détail d'un produit
+- `/orders` : liste et regroupement des commandes par statut
+- Toute autre URL : page 404
+
+Le panier est partagé entre les pages pendant la session. Les routes utilisent React Router pour naviguer sans rechargement.
+
+## Vérifier le projet
 
 ```sh
 npm run build
 npm run lint
 ```
 
-Les images du catalogue et les polices sont chargées en ligne.
-
+Le mode strict est activé dans `tsconfig.app.json`. Les images du catalogue et les polices sont chargées en ligne.

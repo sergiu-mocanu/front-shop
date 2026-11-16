@@ -1,0 +1,46 @@
+[
+  {
+    "id": "CMD-2026-001",
+    "customerEmail": "camille@example.com",
+    "items": [
+      { "productId": "lampe-aria", "quantity": 1 },
+      { "productId": "vase-sillage", "quantity": 1 }
+    ],
+    "total": 187,
+    "status": "shipped",
+    "createdAt": "2026-10-19T10:15:00.000Z",
+    "carrier": "Colissimo"
+  },
+  {
+    "id": "CMD-2026-002",
+    "customerEmail": "alex@example.com",
+    "items": [
+      { "productId": "tasse-atelier", "quantity": 2 }
+    ],
+    "total": 48,
+    "status": "paid",
+    "createdAt": "2026-10-22T14:30:00.000Z",
+    "paymentRef": "PAY-2026-002"
+  },
+  {
+    "id": "CMD-2026-003",
+    "customerEmail": "sam@example.com",
+    "items": [
+      { "productId": "plaid-nuage", "quantity": 1 }
+    ],
+    "total": 89,
+    "status": "pending",
+    "createdAt": "2026-10-25T09:00:00.000Z"
+  },
+  {
+    "id": "CMD-2026-004",
+    "customerEmail": "noa@example.com",
+    "items": [
+      { "productId": "bougie-empreinte", "quantity": 1 }
+    ],
+    "total": 32,
+    "status": "cancelled",
+    "createdAt": "2026-10-26T16:45:00.000Z",
+    "cancellationReason": "Demande du client"
+  }
+]
