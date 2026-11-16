@@ -1,29 +1,37 @@
 # Maison Moderne
 
-Boutique de démonstration construite avec React et TypeScript strict. Le catalogue et les commandes sont chargés depuis les fichiers JSON statiques de `public/data/` ; aucun serveur API n'est nécessaire.
+A demo shop built with React and strict TypeScript. The catalogue and orders are loaded from the
+static JSON files in `public/data/`; no API server is needed. The UI is in French.
 
-## Démarrer
+## Getting started
 
 ```sh
 npm install
 npm run dev
 ```
 
-## Parcours disponibles
+## Routes
 
-- `/` : accueil et sélection de produits
-- `/products` : catalogue complet
-- `/products/:id` : détail d'un produit
-- `/orders` : liste et regroupement des commandes par statut
-- Toute autre URL : page 404
+- `/`: home page and product selection
+- `/products`: full catalogue
+- `/products/:id`: product detail
+- `/orders`: order list, grouped by status
+- Any other URL: 404 page
 
-Le panier est partagé entre les pages pendant la session. Les routes utilisent React Router pour naviguer sans rechargement.
+The cart is shared across pages during the session. Routes use React Router to navigate without
+reloading the page.
 
-## Vérifier le projet
+## Checking the project
 
 ```sh
+npx tsc --noEmit -p tsconfig.app.json
 npm run build
 npm run lint
 ```
 
-Le mode strict est activé dans `tsconfig.app.json`. Les images du catalogue et les polices sont chargées en ligne.
+Strict mode is enabled in `tsconfig.app.json`. Catalogue images and fonts are loaded from the web.
+
+## Audit
+
+Performance, accessibility and eco-design audit (Lighthouse before/after, one commit per axis):
+[AUDIT.md](AUDIT.md).
