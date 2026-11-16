@@ -124,3 +124,7 @@ animation on the placeholders: decorative animation is what eco-design removes.
 | 6a | Eco-design — dead code | `eco: remove Vite template leftovers` | Deleted the Vite starter's CSS (purple theme, dark mode, `.counter`, `.hero`, `#docs`… ~110 lines in `App.css`, ~110 in `index.css`), unused rules (`.quantity-control`, `.detail-back-link`) and unused files (`src/assets/*`, `public/favicon.svg`, `public/icons.svg`); the template rules that still shaped the shop (18px/145% base, no synthesized italic, heading sizes and letter-spacing, `#root` flex column) were kept, merged into the shop's base | CSS file (gzip) | 17.3 kB (4.5 kB) | 13.7 kB (3.6 kB) |
 | | | | | Visual change (8 full-page screenshots: 4 pages × phone/desktop) | — | none (byte-identical) |
 | | | | | Weight `/` (Lighthouse) · EcoIndex weight `/` | 245 KiB · 342 KB | 244 KiB · 341 KB (score unchanged: A 88 · A 86) |
+| 6b | Eco-design — decorative animation | `eco: remove entry fade-in animations` | Removed the `appear` fade-in (opacity + slide) on 5 elements: intro band, product cards (staggered), detail card, orders intro, order rows | Animations on page load | 5 (380–480 ms each, cards staggered up to +165 ms) | 0 |
+| | | | | LCP element, 6 runs (`/` + `/products`) | image or heading (heading in 2 of 3 `/` runs after fix 4c) | image in 6 of 6 |
+| | | | | LCP `/` · `/products` | 2.8 · 2.6 s | 2.8 · 2.6 s |
+| | | | | Settled page appearance | — | visually identical (screenshots differ only in sub-pixel rendering) |
