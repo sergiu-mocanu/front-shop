@@ -1,16 +1,20 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '@/features/auth/AuthContext'
+import { logout } from '@/features/auth/logout'
 
 type SiteHeaderProps = {
-  activePage: 'home' | 'products' | 'orders' | null
+  activePage: 'home' | 'products' | 'orders' | 'account' | null
   cartCount: number
 }
 
 function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
+  const { session } = useAuth()
+
   return (
     <header className="topbar">
       <Link className="wordmark" to="/">
         <span className="wordmark-mark" aria-hidden="true">m.</span>
-        maison moderne
+        <span className="wordmark-text">maison moderne</span>
       </Link>
       <nav className="main-nav" aria-label="Navigation principale">
         <Link className={`nav-link${activePage === 'home' ? ' is-active' : ''}`} to="/">
@@ -23,15 +27,36 @@ function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
           Commandes
         </Link>
       </nav>
-      <Link
-        className="cart-button"
-        to={activePage === 'home' || activePage === 'products' ? '#basket' : '/#basket'}
-      >
-        {/* Accessible name "Panier 3 article(s)" starts with the visible text, for voice control. */}
-        <span>Panier</span>{' '}
-        <span className="cart-count">{cartCount}</span>
-        <span className="visually-hidden"> article(s)</span>
-      </Link>
+      <div className="topbar-actions">
+        {session ? (
+          <>
+            {/* The email on desktop; "Compte" on phones, where the email doesn't fit (CSS). */}
+            <Link
+              className={`account-link${activePage === 'account' ? ' is-active' : ''}`}
+              to="/account"
+              title={session.user.email}
+            >
+              <span className="account-email">{session.user.email}</span>
+              <span className="account-short">Compte</span>
+            </Link>
+            {/* Hidden on phones, where it doesn't fit: the account page has its own button. */}
+            <button className="account-link logout-button" type="button" onClick={logout}>
+              Déconnexion
+            </button>
+          </>
+        ) : (
+          <Link className="account-link" to="/login">Connexion</Link>
+        )}
+        <Link
+          className="cart-button"
+          to={activePage === 'home' || activePage === 'products' ? '#basket' : '/#basket'}
+        >
+          {/* Accessible name "Panier 3 article(s)" starts with the visible text, for voice control. */}
+          <span>Panier</span>{' '}
+          <span className="cart-count">{cartCount}</span>
+          <span className="visually-hidden"> article(s)</span>
+        </Link>
+      </div>
     </header>
   )
 }

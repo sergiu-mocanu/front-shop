@@ -6,7 +6,13 @@
 .nav-link { position: relative; height: 100%; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
 .nav-link.is-active { color: var(--ink); }
 .nav-link.is-active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--coral); content: ''; }
-.cart-button { justify-self: end; display: inline-flex; align-items: center; gap: 10px; padding: 8px 0 8px 12px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+.topbar-actions { justify-self: end; display: flex; align-items: center; gap: 20px; }
+.account-link { padding: 8px 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+.account-link:hover, .account-link.is-active { color: var(--ink); }
+/* Long emails are cut with "…"; the full one is in the link's title. */
+.account-email { display: inline-block; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+.account-short { display: none; }
+.cart-button { display: inline-flex; align-items: center; gap: 10px; padding: 8px 0 8px 12px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
 .cart-count { display: grid; min-width: 25px; height: 25px; padding: 0 6px; place-items: center; border-radius: 50%; background: var(--ink); color: white; font-size: 11px; }
 .intro-band { min-height: 260px; margin: 0 -54px; padding: 48px 54px 43px; display: flex; align-items: center; justify-content: space-between; background: var(--green-wash); }
 .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 15px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
@@ -88,12 +94,25 @@
 .not-found-page h1 { margin: 0; color: var(--ink); font-family: var(--display); font-size: 42px; font-weight: 500; }
 .not-found-page > p:not(.eyebrow) { color: var(--muted); font-size: 13px; }
 .not-found-page .add-button { margin-top: 8px; }
+.account-logout { margin-top: 20px; }
+.auth-page { display: flex; flex: 1; justify-content: center; padding: 72px 0 90px; }
+.auth-form { display: flex; flex-direction: column; gap: 18px; width: min(100%, 380px); }
+.auth-form .eyebrow { margin: 0; }
+.auth-form h1 { margin: 0 0 6px; color: var(--ink); font-family: var(--display); font-size: 42px; font-weight: 500; line-height: 1.1; }
+.auth-field { display: flex; flex-direction: column; gap: 7px; color: var(--ink); font-size: 12px; font-weight: 700; }
+/* Border in --muted, not --line: a field's outline needs 3:1 contrast to be seen (WCAG 1.4.11). */
+.auth-field input { min-height: 42px; padding: 0 12px; border: 1px solid var(--muted); background: white; color: var(--ink); font: inherit; font-size: 14px; font-weight: 400; }
+.auth-field input:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+.auth-error { margin: 0; font-size: 12px; }
+.auth-submit { align-self: flex-start; min-height: 42px; padding: 0 18px; font-size: 12px; }
+.auth-switch p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.auth-switch a { color: var(--ink); }
 .fetch-message { padding: 30px 0; color: var(--muted); font-size: 13px; }
 .error-message { color: #a14337; }
 .orders-page { min-height: 650px; padding: 72px 0 90px; }
 .orders-intro { padding: 35px 40px; background: var(--green-wash); }
 .orders-intro h1 { font-size: 46px; }
-.orders-intro > p:last-child { margin-top: 12px; color: var(--muted); font-size: 12px; }
+.orders-intro > p:not(.eyebrow) { margin-top: 12px; color: var(--muted); font-size: 12px; }
 .orders-content { padding-top: 35px; }
 .order-summary-strip { display: grid; grid-template-columns: repeat(4,1fr); margin-bottom: 20px; border: 1px solid var(--line); }
 .summary-cell { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 13px 15px; border-right: 1px solid var(--line); }
@@ -128,6 +147,13 @@
   .main-nav { gap: 15px; }
   .nav-link { font-size: 11px; }
   .cart-button { gap: 6px; font-size: 11px; }
+  .topbar-actions { gap: 12px; }
+  .account-link { font-size: 11px; }
+  .account-email { display: none; }
+  .account-short { display: inline; }
+  .logout-button { display: none; }
+  .auth-page { padding: 45px 0 60px; }
+  .auth-form h1 { font-size: 34px; }
   .intro-band { min-height: 0; margin-inline: -18px; padding: 40px 18px; }
   .intro-copy h1 { max-width: 390px; font-size: 42px; }
   .intro-description { max-width: 350px; font-size: 12px; }
@@ -159,6 +185,8 @@
   .wordmark { font-size: 10px; }
   .main-nav { gap: 10px; }
   .nav-link { font-size: 10px; }
+  .topbar-actions { gap: 9px; }
+  .account-link { font-size: 10px; }
   .cart-button > span:first-child { display: none; }
   .product-grid { grid-template-columns: 1fr; }
   .product-image-wrap { aspect-ratio: 1.35 / 1; }
@@ -166,4 +194,11 @@
 }
 
 /* Hidden visually, still read by screen readers. */
+/* Below 340px the header (logo, nav, account link, cart) can't fit on one row: keep only the round
+   mark (the name stays readable by screen readers), and size the sides to their content. */
+@media (max-width: 340px) {
+  .topbar { grid-template-columns: auto 1fr auto; }
+  .wordmark-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
