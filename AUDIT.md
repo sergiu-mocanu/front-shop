@@ -19,9 +19,9 @@ Each fix is its own commit (`perf:`, `a11y:`, `eco:`), and that commit updates t
 | Page | Measure | Perf | A11y | Best Pr. | SEO | FCP | LCP | TBT | CLS | SI | Requests | Transferred |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `/` | before | 88 | 95 | 96 | 92 | 1.6 s | 2.8 s | 0 ms | 0.163 | 1.6 s | 12 | 362 KiB |
-| `/` | after | | | | | | | | | | | |
+| `/` | after | 98 | 95 | 96 | 91 | 0.8 s | 2.5 s | 0 ms | 0.000 | 0.8 s | 12 | 215 KiB |
 | `/products` | before | 75 | 95 | 96 | 92 | 1.6 s | 3.2 s | 0 ms | 0.366 | 1.6 s | 14 | 490 KiB |
-| `/products` | after | | | | | | | | | | | |
+| `/products` | after | 98 | 95 | 96 | 91 | 0.8 s | 2.4 s | 0 ms | 0.000 | 0.8 s | 15 | 256 KiB |
 
 FCP = First Contentful Paint · LCP = Largest Contentful Paint · TBT = Total Blocking Time ·
 CLS = Cumulative Layout Shift · SI = Speed Index.
@@ -33,9 +33,9 @@ emissions per page view.
 | Page | Measure | Grade | Score | DOM elements | Requests | Weight | GHG | Water |
 |---|---|---|---|---|---|---|---|---|
 | `/` | before | A | 88 | 130 | 13 | 374 KB | 1.24 gCO₂e | 1.86 cl |
-| `/` | after | | | | | | | |
+| `/` | after | A | 88 | 140 | 11 | 310 KB | 1.24 gCO₂e | 1.86 cl |
 | `/products` | before | A | 86 | 154 | 15 | 505 KB | 1.28 gCO₂e | 1.92 cl |
-| `/products` | after | | | | | | | |
+| `/products` | after | A | 86 | 167 | 14 | 420 KB | 1.28 gCO₂e | 1.92 cl |
 
 ## Baseline findings
 
@@ -87,6 +87,54 @@ footer: since fix 3, the one-line `Suspense` fallback leaves the footer high whi
 downloads. A full-height fallback keeps it below the viewport, where moves don't count. No shimmer
 animation on the placeholders: decorative animation is what eco-design removes.
 
+Notes on fix 4c: kept for its network-level gain; the lab LCP did **not** improve. Lighthouse
+simulates LCP from the dependency chain, and the image still waits for the JS to download and run.
+The `/` medians after this fix read Perf 100 and LCP 0.8 s, but that is an artifact: in 2 runs of 3
+the LCP element switched from the product image to the "À découvrir" heading. Likely cause: images
+now arrived while the cards faded in (`appear` animation), and Chrome doesn't count an element as
+LCP while it is fading in. Not reported as a gain; confirmed by fix 6b.
+
+Notes on fix 5: the a11y score can't move until every element passes the contrast audit (it is
+pass/fail per page); the only element left is the logo mark "m." (white on coral, 3.58:1), and
+WCAG 1.4.3 exempts logotypes from contrast requirements, so it was kept. Checked by code review, no
+issue: one `<h1>` per page, no clickable `<div>`, visible focus outline (`index.css`), `lang="fr"`,
+no form fields to label. Tab stops listed with a headless-Chrome script and checked by hand with
+the keyboard. SEO moved 92 → 91 by arithmetic only: the `image-alt` audit no longer applies (images
+are inside `aria-hidden` links), so a passing audit left the average; crawlers still read the `alt`.
+
+Notes on fix 6a: deleting the whole template stylesheet first changed every screenshot: some of
+its rules were silently part of the look (`font-synthesis: none` kept "pour longtemps." upright,
+the inherited 145% line height set the rhythm, and `h1 { letter-spacing }` beat the shop's
+`* { letter-spacing: 0 }` reset by specificity). Those were restored into the shop's base CSS until
+the screenshots were byte-identical again. The unused files cost visitors nothing (Vite ships only
+imported files, and `favicon.svg` wasn't referenced); deleting them is repo hygiene.
+
+Notes on fix 6b: confirms the cause of fix 4c's artifact: without the fade-in, the product image is
+the LCP element in every run, so LCP is now measured on the right element. Screenshots of the
+settled pages are visually identical but not byte-identical: a finished animation with
+`fill-mode: both` leaves a `transform` that puts the element on its own compositing layer, which
+changes text anti-aliasing slightly. The hover zoom on product images was kept: it answers a user
+action.
+
+Notes on fix 6c — a trade-off decision, not a reflex:
+- **Option B, measured and rejected:** dropping Fraunces for the declared fallback (Georgia) saves
+  68 KB per page (−20 % on `/`, −1 request) but leaves the EcoIndex score unchanged (A 88 · A 86:
+  DOM size dominates the formula, weight counts ×1), and the font is cached after the first visit.
+  Visually it changes the brand: on Linux the fallback is a Times-like serif, on Windows/macOS
+  Georgia, and "pour longtemps." turns italic (the system serif has a real italic).
+- **Option C, chosen:** slimming the font keeps ~45 % of B's byte saving with a near-identical look.
+  Three pinned values were compared on screenshots (opsz 18, 28, 48: all ~37 KB); 48 keeps the hero
+  title closest to the original (~+1 % width, small headings marginally finer).
+- **Why:** in a professional setting, brand identity, custom fonts included, is a deliberate
+  investment that a company won't trade for a few dozen kilobytes. Eco-design gains that degrade
+  the visuals are acceptable where the visuals carry no value (internal or developer tools,
+  infrastructure dashboards), not on a customer-facing shop. The right move is to cut the cost of
+  the brand's assets, not the brand.
+- Unexpected gain: LCP improved (2.8 → 2.5 s on `/`): on the simulated slow 4G, the preloaded fonts
+  share bandwidth with the product image, so a lighter font lets the image arrive sooner.
+- The SIL Open Font License allows modified versions; Fraunces declares no Reserved Font Name, so
+  the instanced file keeps its name (license text in `public/fonts/`).
+
 | # | Axis | Commit | Fix | Metric | Before | After |
 |---|---|---|---|---|---|---|
 | 1 | Perf — images | `perf: responsive, lazy-loaded product images` | `srcset` 400/800/1200 w + `sizes` (was one 900 px file for every screen); `loading="lazy"` after the first 2 cards; `fetchPriority="high"` on the first; `decoding="async"` | Weight `/` · `/products` | 362 · 490 KiB | 246 · 286 KiB |
@@ -128,3 +176,22 @@ animation on the placeholders: decorative animation is what eco-design removes.
 | | | | | LCP element, 6 runs (`/` + `/products`) | image or heading (heading in 2 of 3 `/` runs after fix 4c) | image in 6 of 6 |
 | | | | | LCP `/` · `/products` | 2.8 · 2.6 s | 2.8 · 2.6 s |
 | | | | | Settled page appearance | — | visually identical (screenshots differ only in sub-pixel rendering) |
+| 6c | Eco-design — font weight | `eco: slim the Fraunces font` | Fraunces (headings) instanced with fonttools: optical-size axis pinned at 48 (was 9–144, adapted to each size), weight axis 400–500 kept; same file name and `@font-face` | Fraunces file | 67 KB | 37 KB (−45 %) |
+| | | | | Weight `/` · `/products` (Lighthouse) | 244 · 285 KiB | 215 · 256 KiB |
+| | | | | LCP `/` · `/products` | 2.8 · 2.6 s | 2.5 · 2.4 s (image in 6 of 6 runs) |
+| | | | | Perf `/` · `/products` | 96 · 97 | 98 · 98 |
+| | | | | EcoIndex weight `/` · `/products` | 341 · 450 KB | 310 · 420 KB (score unchanged: A 88 · A 86) |
+
+## Conclusion
+
+- **Measure, fix, re-measure:** every row above is a re-measured "from X to Y", including the fixes
+  that didn't pay off (code-splitting, the LCP hints) and why. Two apparent gains were measurement
+  artifacts (a CLS drop from a loading race, a Perf 100 from the LCP element switching), caught by
+  checking *which* element was measured.
+- **Performance:** Perf 88 → 98 (`/`) and 75 → 98 (`/products`); the biggest wins were layout
+  stability (CLS 0.37 → 0) and the font chain (FCP 1.6 → 0.8 s), not the bundle.
+- **Accessibility:** contrast, accessible names and keyboard order fixed (tab stops 22 → 16 on
+  `/products`); the score stays 95 only because of the logo, exempt under WCAG.
+- **Eco-design:** the pages were already graded A; removing template leftovers, decorative
+  animations and 30 KB of font cut weight by ~13 % with no visible change. EcoIndex doesn't move:
+  on a page this small, its score is driven by DOM size, which the shop already keeps low.

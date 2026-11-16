@@ -7,6 +7,8 @@
   font-display: swap;
   src: url('/fonts/dm-sans-latin.woff2') format('woff2');
 }
+/* Fraunces: Google's latin subset with the optical-size axis pinned at 48 (fonttools
+   varLib.instancer, opsz=48): 67 → 37 KB, weight axis 400–500 kept. */
 @font-face {
   font-family: 'Fraunces';
   font-style: normal;
