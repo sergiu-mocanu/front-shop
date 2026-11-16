@@ -1,18 +1,21 @@
 import type { Product } from '@/types/ecommerce'
 import { Link } from 'react-router-dom'
 import ProductImage from '@/features/products/ProductImage'
+import { useCart } from '@/features/cart/store'
 
 // Card image width: full width on small phones, half the grid below 720px, ~455px max on desktop.
 const CARD_SIZES = '(max-width: 390px) 100vw, (max-width: 720px) 50vw, 460px'
 
 type ProductCardProps = {
   product: Product
-  onAddToCart: (productId: string) => void
   /** Position in the grid: the first cards are above the fold. */
   index: number
 }
 
-function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
+function ProductCard({ product, index }: ProductCardProps) {
+  // An action never changes, so selecting it never re-renders the card when the cart changes.
+  const addToCart = useCart((state) => state.addToCart)
+
   return (
     <article className="product-card">
       {/* Duplicate of the title link, kept for mouse/touch: out of the tab order and hidden from
@@ -47,7 +50,7 @@ function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
             className="add-button"
             type="button"
             disabled={!product.in_stock}
-            onClick={() => onAddToCart(product.id)}
+            onClick={() => addToCart(product.id)}
           >
             Ajouter au panier
             <span className="visually-hidden"> : {product.name}</span>

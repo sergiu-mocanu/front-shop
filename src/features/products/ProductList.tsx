@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import ProductCard from '@/features/products/ProductCard'
 import ProductCardPlaceholder from '@/features/products/ProductCardPlaceholder'
 import { useProducts } from '@/features/products/queries'
@@ -7,11 +7,10 @@ import { useProducts } from '@/features/products/queries'
 const PLACEHOLDER_COUNT = 7
 
 type ProductListProps = {
-  onAddToCart: (productId: string) => void
   maxItems?: number
 }
 
-function ProductList({ onAddToCart, maxItems }: ProductListProps) {
+function ProductList({ maxItems }: ProductListProps) {
   const result = useProducts()
   let content: ReactNode
 
@@ -33,7 +32,7 @@ function ProductList({ onAddToCart, maxItems }: ProductListProps) {
       const products = maxItems === undefined ? result.data : result.data.slice(0, maxItems)
       content = products.length > 0
         ? products.map((product, index) => (
-            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} index={index} />
+            <ProductCard key={product.id} product={product} index={index} />
           ))
         : <p className="fetch-message">Aucun produit à afficher pour le moment.</p>
       break
@@ -47,7 +46,6 @@ function ProductList({ onAddToCart, maxItems }: ProductListProps) {
   return <div className="product-grid" aria-live="polite">{content}</div>
 }
 
-// Memoized: the cart lives in App, so every cart change re-renders App's whole tree. The list's
-// props (stable onAddToCart, maxItems) don't change with the cart, so it and its cards skip.
-// It still re-renders when its own query changes, since useProducts() subscribes to the cache.
-export default memo(ProductList)
+// No memo needed any more: the cart lives in a store, not in App, so a cart change no longer
+// re-renders the page tree; only the components that select the cart re-render.
+export default ProductList

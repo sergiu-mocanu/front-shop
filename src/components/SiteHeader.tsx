@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
+import { selectItemCount, useCart } from '@/features/cart/store'
 import { logout } from '@/features/auth/logout'
 
 type SiteHeaderProps = {
-  activePage: 'home' | 'products' | 'orders' | 'account' | null
-  cartCount: number
+  activePage: 'home' | 'products' | 'account' | null
 }
 
-function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
+function SiteHeader({ activePage }: SiteHeaderProps) {
   const { session, booted } = useAuth()
+  const cartCount = useCart(selectItemCount)
 
   return (
     <header className="topbar">
@@ -22,9 +23,6 @@ function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
         </Link>
         <Link className={`nav-link${activePage === 'products' ? ' is-active' : ''}`} to="/products">
           Boutique
-        </Link>
-        <Link className={`nav-link${activePage === 'orders' ? ' is-active' : ''}`} to="/orders">
-          Commandes
         </Link>
       </nav>
       <div className="topbar-actions">

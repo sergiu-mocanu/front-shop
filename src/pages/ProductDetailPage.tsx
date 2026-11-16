@@ -2,25 +2,15 @@ import ProductImage from '@/features/products/ProductImage'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CartPanel from '@/components/CartPanel'
 import { useProduct } from '@/features/products/queries'
-import type { Cart } from '@/types/ecommerce'
+import { useCart } from '@/features/cart/store'
 
-type ProductDetailPageProps = {
-  cart: Cart
-  onAddToCart: (productId: string) => void
-  onRemoveFromCart: (productId: string) => void
-  onClearCart: () => void
-}
 
-function ProductDetailPage({
-  cart,
-  onAddToCart,
-  onRemoveFromCart,
-  onClearCart,
-}: ProductDetailPageProps) {
+function ProductDetailPage() {
   // The route is /products/:slug, so the param is always present on this page.
   const { slug = '' } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const { data: product, status, error } = useProduct(slug)
+  const addToCart = useCart((state) => state.addToCart)
 
   return (
     <main className="products-page">
@@ -77,7 +67,7 @@ function ProductDetailPage({
                     className="add-button"
                     type="button"
                     disabled={!product.in_stock}
-                    onClick={() => onAddToCart(product.id)}
+                    onClick={() => addToCart(product.id)}
                   >
                     Ajouter au panier <span aria-hidden="true">＋</span>
                   </button>
@@ -86,11 +76,7 @@ function ProductDetailPage({
             </article>
           )}
         </section>
-        <CartPanel
-          cart={cart}
-          onRemove={onRemoveFromCart}
-          onClear={onClearCart}
-        />
+        <CartPanel />
       </div>
     </main>
   )

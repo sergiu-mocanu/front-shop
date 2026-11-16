@@ -1,18 +1,24 @@
+import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '@/features/auth/AuthContext'
+import { useCart } from '@/features/cart/store'
+import { usePlaceOrder } from '@/features/orders/queries'
 import { useProducts } from '@/features/products/queries'
-import type { Cart } from '@/types/ecommerce'
 
-type CartPanelProps = {
-  cart: Cart
-  onRemove: (productId: string) => void
-  onClear: () => void
-}
-
-function CartPanel({ cart, onRemove, onClear }: CartPanelProps) {
+function CartPanel() {
+  const cart = useCart((state) => state.cart)
+  const removeFromCart = useCart((state) => state.removeFromCart)
+  const clearCart = useCart((state) => state.clearCart)
+  const { session } = useAuth()
+  const location = useLocation()
+  const placeOrder = usePlaceOrder()
   const { data: products = [] } = useProducts()
+
   const lines = Object.values(cart)
   const itemCount = lines.reduce((total, line) => total + line.quantity, 0)
-  const getProductName = (productId: string) =>
-    products.find((product) => product.id === productId)?.name ?? productId
+  const findProduct = (productId: string) => products.find((product) => product.id === productId)
+  const getProductName = (productId: string) => findProduct(productId)?.name ?? productId
+  // Indicative total from the catalogue; the order itself is priced by the database.
+  const total = lines.reduce((sum, line) => sum + (findProduct(line.productId)?.price ?? 0) * line.quantity, 0)
 
   return (
     <aside className="cart-panel" id="basket" aria-labelledby="cart-title">
@@ -41,17 +47,42 @@ function CartPanel({ cart, onRemove, onClear }: CartPanelProps) {
               <button
                 className="remove-button"
                 type="button"
-                onClick={() => onRemove(line.productId)}
+                onClick={() => removeFromCart(line.productId)}
                 aria-label={`Retirer ${getProductName(line.productId)} du panier`}
               >
                 Retirer
               </button>
             </div>
           ))}
-          <button className="clear-cart" type="button" onClick={onClear}>
+          <button className="clear-cart" type="button" onClick={clearCart}>
             Vider le panier
           </button>
+          <p className="cart-total">Total <strong>{total} €</strong></p>
+          {session ? (
+            <button
+              className="add-button cart-checkout"
+              type="button"
+              disabled={placeOrder.isPending}
+              onClick={() => placeOrder.mutate(lines)}
+            >
+              {placeOrder.isPending ? 'Commande en cours…' : 'Commander'}
+            </button>
+          ) : (
+            // state.from: back to this page after login; the cart is kept (persisted store).
+            <Link className="add-button cart-checkout" to="/login" state={{ from: location.pathname }}>
+              Se connecter pour commander
+            </Link>
+          )}
+          {placeOrder.isError && (
+            <p className="cart-message error-message" role="alert">{placeOrder.error.message}</p>
+          )}
         </div>
+      )}
+      {/* Outside the lines: the cart is empty once the order is placed. */}
+      {placeOrder.isSuccess && (
+        <p className="cart-message" role="status">
+          Commande enregistrée. <Link to="/account">Voir mes commandes</Link>
+        </p>
       )}
       <div className="cart-footnote"><span className="footnote-check">✓</span> Livraison offerte dès 80 €</div>
     </aside>
