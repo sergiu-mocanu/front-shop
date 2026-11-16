@@ -1,17 +1,31 @@
 import type { Product } from '@/types/ecommerce'
 import { Link } from 'react-router-dom'
+import ProductImage from '@/features/products/ProductImage'
+
+// Card image width: full width on small phones, half the grid below 720px, ~455px max on desktop.
+const CARD_SIZES = '(max-width: 390px) 100vw, (max-width: 720px) 50vw, 460px'
 
 type ProductCardProps = {
   product: Product
   onAddToCart: (productId: string) => void
+  /** Position in the grid: the first cards are above the fold. */
+  index: number
 }
 
-function ProductCard({ product, onAddToCart }: ProductCardProps) {
+function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
   return (
     <article className="product-card">
       <Link className="product-image-link" to={`/products/${product.id}`} aria-label={`Voir ${product.name}`}>
         <div className="product-image-wrap">
-          {product.image && <img className="product-image" src={product.image} alt={product.name} />}
+          {product.image && (
+            <ProductImage
+              src={product.image}
+              alt={product.name}
+              sizes={CARD_SIZES}
+              eager={index < 2}
+              priority={index === 0}
+            />
+          )}
           {product.badge && <span className="product-badge">{product.badge}</span>}
           {product.category && <span className="product-category">{product.category}</span>}
         </div>

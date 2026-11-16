@@ -1,3 +1,4 @@
+import ProductImage from '@/features/products/ProductImage'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CartPanel from '@/components/CartPanel'
 import type { Cart, FetchResult, Product } from '@/types/ecommerce'
@@ -54,7 +55,14 @@ function ProductDetailPage({
           ) : (
             <article className="product-detail-card">
               <div className="product-image-wrap">
-                {product.image && <img className="product-image" src={product.image} alt={product.name} />}
+                {product.image && (
+                  <ProductImage
+                    src={product.image}
+                    alt={product.name}
+                    sizes="(max-width: 720px) 100vw, 720px"
+                    priority
+                  />
+                )}
                 {product.badge && <span className="product-badge">{product.badge}</span>}
                 {product.category && <span className="product-category">{product.category}</span>}
               </div>

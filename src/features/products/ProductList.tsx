@@ -22,8 +22,8 @@ function ProductList({ result, onAddToCart, maxItems }: ProductListProps) {
     case 'success': {
       const products = maxItems === undefined ? result.data : result.data.slice(0, maxItems)
       content = products.length > 0
-        ? products.map((product) => (
-            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
+        ? products.map((product, index) => (
+            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} index={index} />
           ))
         : <p className="fetch-message">Aucun produit à afficher pour le moment.</p>
       break
