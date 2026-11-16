@@ -121,4 +121,6 @@ animation on the placeholders: decorative animation is what eco-design removes.
 | | | | | Keyboard tab stops `/` · `/products` | 19 · 22 | 15 · 16 |
 | | | | | Distinct names among "Ajouter au panier" buttons on `/products` | 1 (all identical) | 5 (one per in-stock product) |
 | | | | | A11y score `/` · `/products` | 95 · 95 | 95 · 95 (see notes) |
-| 6 | Eco-design | | | | | |
+| 6a | Eco-design — dead code | `eco: remove Vite template leftovers` | Deleted the Vite starter's CSS (purple theme, dark mode, `.counter`, `.hero`, `#docs`… ~110 lines in `App.css`, ~110 in `index.css`), unused rules (`.quantity-control`, `.detail-back-link`) and unused files (`src/assets/*`, `public/favicon.svg`, `public/icons.svg`); the template rules that still shaped the shop (18px/145% base, no synthesized italic, heading sizes and letter-spacing, `#root` flex column) were kept, merged into the shop's base | CSS file (gzip) | 17.3 kB (4.5 kB) | 13.7 kB (3.6 kB) |
+| | | | | Visual change (8 full-page screenshots: 4 pages × phone/desktop) | — | none (byte-identical) |
+| | | | | Weight `/` (Lighthouse) · EcoIndex weight `/` | 245 KiB · 342 KB | 244 KiB · 341 KB (score unchanged: A 88 · A 86) |
