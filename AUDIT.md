@@ -65,13 +65,23 @@ Notes on fix 1: CLS is unchanged (see baseline findings: not an image issue); th
 unchanged because Chrome starts lazy images ~1,250 px before the viewport, which covers these short
 pages; EcoIndex measures a desktop window, where larger renditions are rightly picked.
 
+Notes on fix 2: LCP on `/` is a product image, which waits for JS → `products.json` → image; fonts
+aren't in that chain, so it stays within noise. Font bytes are unchanged (same files, now
+same-origin); the gain is the removed connections and request chain.
+
 | # | Axis | Commit | Fix | Metric | Before | After |
 |---|---|---|---|---|---|---|
 | 1 | Perf — images | `perf: responsive, lazy-loaded product images` | `srcset` 400/800/1200 w + `sizes` (was one 900 px file for every screen); `loading="lazy"` after the first 2 cards; `fetchPriority="high"` on the first; `decoding="async"` | Weight `/` · `/products` | 362 · 490 KiB | 246 · 286 KiB |
 | | | | | LCP `/` · `/products` | 2.8 · 3.2 s | 2.7 · 3.0 s |
 | | | | | Perf `/` · `/products` | 88 · 75 | 89 · 76 |
 | | | | | EcoIndex weight (desktop) | 374 · 505 KB | 344 · 452 KB (score unchanged: A 88 · A 86) |
-| 2 | Perf — fonts | | | | | |
+| 2 | Perf — fonts | `perf: self-host and preload fonts` | DM Sans and Fraunces self-hosted in `public/fonts/` (was a CSS `@import` from Google Fonts: CSS → Google CSS → font files, on 2 extra domains, blocking the first paint); `@font-face` with `font-display: swap`; both fonts preloaded in `index.html` | FCP `/` · `/products` | 1.6 · 1.6 s | 0.8 · 0.8 s |
+| | | | | Speed Index `/` · `/products` | 1.6 · 1.6 s | 0.8 · 0.8 s |
+| | | | | Render-blocking (est.) `/` | 990 ms | 150 ms |
+| | | | | LCP `/` · `/products` | 2.7 · 3.0 s | 2.8 · 2.6 s |
+| | | | | Perf `/` · `/products` | 89 · 76 | 89 · 80 |
+| | | | | Requests `/` · `/products` (Lighthouse) | 12 · 14 | 11 · 13 |
+| | | | | Requests (EcoIndex) | 13 · 15 | 10 · 12 (score unchanged: A 88 · A 86) |
 | 3 | Perf — code-splitting | | | | | |
 | 4 | Perf — re-renders | | | | | |
 | 5 | Accessibility | | | | | |
