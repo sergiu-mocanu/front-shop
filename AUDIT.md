@@ -112,5 +112,8 @@ animation on the placeholders: decorative animation is what eco-design removes.
 | 4b | Perf — layout stability (extra, outside the 4 axes) | `perf: reserve space while content loads` | While `products.json` loads, the grid shows placeholder cards built from the real card's markup and classes (same size at every breakpoint; loading still announced to screen readers); the `Suspense` fallback of lazy pages fills the screen so the footer starts below it | CLS `/` · `/products` | 0.160 · 0.109 | 0.000 · 0.000 |
 | | | | | Perf `/` · `/products` | 89 · 93 | 96 · 95 |
 | | | | | LCP `/` · `/products` | 2.8 · 2.7 s | 2.8 · 2.9 s (within noise) |
+| 4c | Perf — LCP chain hints (extra, outside the exercise) | `perf: preload product data, preconnect to image host` | `<link rel="preload" as="fetch">` for `products.json` (fetched alongside the JS instead of after it) and `<link rel="preconnect">` to `images.unsplash.com` | `products.json` request start (observed) | ~40 ms after the JS | with or before the JS |
+| | | | | First image download (observed, unthrottled) | 59–71 ms | 11–16 ms |
+| | | | | LCP `/` when the image is the LCP element | 2.8 s | 2.8 s (no lab gain) |
 | 5 | Accessibility | | | | | |
 | 6 | Eco-design | | | | | |
