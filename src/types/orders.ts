@@ -19,6 +19,9 @@ export interface OrderItem {
 
 export type OrderWithItems = Order & { order_items: OrderItem[] }
 
+// The admin's view adds the customer (null if their account was deleted).
+export type AdminOrder = OrderWithItems & { profiles: { email: string | null } | null }
+
 export function orderTotal(order: OrderWithItems): number {
   return order.order_items.reduce((total, item) => total + item.quantity * item.unit_price, 0)
 }

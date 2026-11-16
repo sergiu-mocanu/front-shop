@@ -51,7 +51,7 @@ function AuthForm({ title, submitLabel, passwordAutoComplete, onSubmit, children
       <form className="auth-form" onSubmit={handleSubmit}>
         <p className="eyebrow"><span className="eyebrow-dot" /> Votre espace</p>
         <h1>{title}</h1>
-        <label className="auth-field">
+        <label className="form-field">
           E-mail
           <input
             type="email"
@@ -61,7 +61,7 @@ function AuthForm({ title, submitLabel, passwordAutoComplete, onSubmit, children
             onChange={(event) => setEmail(event.target.value)}
           />
         </label>
-        <label className="auth-field">
+        <label className="form-field">
           Mot de passe
           <input
             type="password"

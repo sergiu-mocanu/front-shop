@@ -6,7 +6,8 @@ A demo shop built with React and strict TypeScript. The catalogue and orders liv
 ## Getting started
 
 1. In a Supabase project, run the files of `supabase/` in order (`01-schema.sql`,
-   `02-seed-products.sql`, `03-orders.sql`) in the SQL editor.
+   `02-seed-products.sql`, `03-orders.sql`, `04-admin.sql`) in the SQL editor. To make an account
+   admin, run the `update profiles ...` statement at the end of `04-admin.sql` with its email.
 2. Create `.env` at the repo root (it is git-ignored) with the project URL and its anon key, from
    Project Settings > API Keys:
 
@@ -29,6 +30,7 @@ A demo shop built with React and strict TypeScript. The catalogue and orders liv
 - `/products/:slug`: product detail (e.g. `/products/lampe-aria`)
 - `/login`, `/signup`: email and password (Supabase Auth)
 - `/account`: the logged-in user's orders (protected)
+- `/admin`, `/admin/orders`: catalogue management and all orders (admins only)
 - Any other URL: 404 page
 
 The cart lives in a Zustand store saved in localStorage, so it survives a reload. Ordering needs

@@ -4,6 +4,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import HomePage from '@/pages/HomePage'
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
+import { AdminRoute } from '@/features/auth/AdminRoute'
 import '@/App.css'
 
 // Code-splitting: each secondary page is its own chunk, downloaded on first visit.
@@ -14,6 +15,8 @@ const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignupPage = lazy(() => import('@/pages/SignupPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
+const AdminProductsPage = lazy(() => import('@/pages/AdminProductsPage'))
+const AdminOrdersPage = lazy(() => import('@/pages/AdminOrdersPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function App() {
@@ -24,7 +27,9 @@ function App() {
       ? 'products'
       : pathname === '/account'
         ? 'account'
-        : null
+        : pathname.startsWith('/admin')
+          ? 'admin'
+          : null
 
   return (
     <div className="app-shell">
@@ -37,6 +42,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
+          <Route path="/admin" element={<AdminRoute><AdminProductsPage /></AdminRoute>} />
+          <Route path="/admin/orders" element={<AdminRoute><AdminOrdersPage /></AdminRoute>} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

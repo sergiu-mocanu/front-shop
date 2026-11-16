@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
+import { useProfile } from '@/features/auth/useProfile'
 import { selectItemCount, useCart } from '@/features/cart/store'
 import { logout } from '@/features/auth/logout'
 
 type SiteHeaderProps = {
-  activePage: 'home' | 'products' | 'account' | null
+  activePage: 'home' | 'products' | 'account' | 'admin' | null
 }
 
 function SiteHeader({ activePage }: SiteHeaderProps) {
   const { session, booted } = useAuth()
   const cartCount = useCart(selectItemCount)
+  // The Admin link is a convenience for admins; the policies are what protect admin data.
+  const isAdmin = useProfile().data?.role === 'admin'
 
   return (
     <header className="topbar">
@@ -24,6 +27,11 @@ function SiteHeader({ activePage }: SiteHeaderProps) {
         <Link className={`nav-link${activePage === 'products' ? ' is-active' : ''}`} to="/products">
           Boutique
         </Link>
+        {isAdmin && (
+          <Link className={`nav-link${activePage === 'admin' ? ' is-active' : ''}`} to="/admin">
+            Admin
+          </Link>
+        )}
       </nav>
       <div className="topbar-actions">
         {/* Until the first session read, the user is unknown: show neither "Compte" nor

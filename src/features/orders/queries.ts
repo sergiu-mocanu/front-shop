@@ -3,7 +3,7 @@ import { useAuth } from '@/features/auth/AuthContext'
 import { useCart } from '@/features/cart/store'
 import { supabase } from '@/lib/supabase'
 import type { CartLine } from '@/types/ecommerce'
-import type { OrderWithItems } from '@/types/orders'
+import type { AdminOrder, OrderWithItems } from '@/types/orders'
 
 // The user's orders, with their lines and product names (a nested select: PostgREST follows the
 // foreign keys order_items.order_id and order_items.product_id).
@@ -27,6 +27,28 @@ export function useMyOrders() {
       return data as unknown as OrderWithItems[]
     },
     enabled: Boolean(userId), // no request before the session is known
+  })
+}
+
+// Every customer's order, for the admin page: same select, plus the customer's email through the
+// orders -> profiles foreign key. Same request as useMyOrders without any filter: the policy
+// "admin reads orders" is what widens the result, not the front.
+export function useAllOrders() {
+  const { session } = useAuth()
+  const userId = session?.user.id
+
+  return useQuery({
+    queryKey: ['orders', { scope: 'all', userId }],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('id, user_id, status, created_at, profiles(email), order_items(quantity, unit_price, products(name))')
+        .order('created_at', { ascending: false })
+      if (error) throw new Error(error.message)
+      // `as unknown` first: see useMyOrders (many-to-one relations come back as one object).
+      return data as unknown as AdminOrder[]
+    },
+    enabled: Boolean(userId),
   })
 }
 
