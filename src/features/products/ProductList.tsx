@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 import type { FetchResult, Product } from '@/types/ecommerce'
 import ProductCard from '@/features/products/ProductCard'
 
@@ -37,4 +37,6 @@ function ProductList({ result, onAddToCart, maxItems }: ProductListProps) {
   return <div className="product-grid" aria-live="polite">{content}</div>
 }
 
-export default ProductList
+// Memoized: the cart lives in App, so every cart change re-renders App's whole tree. The list's
+// props (fetch result, stable onAddToCart) don't change with the cart, so it and its cards skip.
+export default memo(ProductList)

@@ -76,6 +76,12 @@ CLS drop on `/products` is a timing side effect, not a fix: while the page chunk
 `products.json` usually arrives too, so the grid renders at once instead of replacing a loading
 message. Lesson: code-splitting pays off for heavy pages; here the weight is in shared libraries.
 
+Notes on fix 4: React's `<Profiler>` is disabled in production builds and React DevTools needs
+manual clicks, so renders were counted with a temporary counter in each component's body
+(production build, removed before the commit) while a script drove headless Chrome over the
+DevTools Protocol: load `/products`, click "Ajouter au panier" 3 times, read the counters. The
+remaining `SiteFooter` renders (3) aren't worth a `memo()`: static and trivial to render.
+
 | # | Axis | Commit | Fix | Metric | Before | After |
 |---|---|---|---|---|---|---|
 | 1 | Perf — images | `perf: responsive, lazy-loaded product images` | `srcset` 400/800/1200 w + `sizes` (was one 900 px file for every screen); `loading="lazy"` after the first 2 cards; `fetchPriority="high"` on the first; `decoding="async"` | Weight `/` · `/products` | 362 · 490 KiB | 246 · 286 KiB |
@@ -96,6 +102,7 @@ message. Lesson: code-splitting pays off for heavy pages; here the weight is in 
 | | | | | LCP `/` · `/products` | 2.8 · 2.6 s | 2.8 · 2.8 s |
 | | | | | Requests `/` · `/products` (Lighthouse) | 11 · 13 | 12 · 15 |
 | | | | | Requests (EcoIndex) | 10 · 12 | 11 · 14 (score unchanged: A 88 · A 86) |
-| 4 | Perf — re-renders | | | | | |
+| 4 | Perf — re-renders | `perf: skip product list re-renders on cart changes` | `useCallback` for the cart actions in `useCart` (stable props), then `memo(ProductList)`; the state can't move lower than `App`, the only common parent of the header and the cart panel | Renders for 3 add-to-cart clicks on `/products` | 36 (24 unneeded: `ProductList` ×3, `ProductCard` ×18, `SiteFooter` ×3) | 15 (`ProductList` and `ProductCard`: 0) |
+| | | | | TBT `/` · `/products` | 0 · 0 ms | 0 · 0 ms (no lab metric can move) |
 | 5 | Accessibility | | | | | |
 | 6 | Eco-design | | | | | |
