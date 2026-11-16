@@ -1,9 +1,9 @@
 .app-shell { width: min(1360px, 100%); min-height: 100vh; margin: 0 auto; padding: 0 54px; display: flex; flex-direction: column; text-align: left; }
 .topbar { height: 82px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; border-bottom: 1px solid var(--line); }
-.wordmark { display: inline-flex; align-items: center; gap: 10px; width: fit-content; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 700; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; width: fit-content; line-height: 1.2; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 700; }
 .wordmark-mark { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: var(--coral); color: white; font-family: var(--display); font-size: 18px; font-style: italic; }
 .main-nav { display: flex; align-items: center; justify-content: center; gap: 35px; height: 100%; }
-.nav-link { position: relative; height: 100%; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+.nav-link { position: relative; display: flex; align-items: center; height: 100%; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
 .nav-link.is-active { color: var(--ink); }
 .nav-link.is-active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--coral); content: ''; }
 .topbar-actions { justify-self: end; display: flex; align-items: center; gap: 20px; }
@@ -179,15 +179,20 @@
   .site-footer { flex-direction: column; gap: 7px; }
 }
 
-@media (max-width: 390px) {
-  .app-shell { padding-inline: 13px; }
-  .intro-band { margin-inline: -13px; padding-inline: 13px; }
+/* The compact header starts at 430px, not 390px: with the account link, phones of 391-430px
+   (e.g. 412px Androids) overflowed with the larger phone sizes. */
+@media (max-width: 430px) {
   .wordmark { font-size: 10px; }
   .main-nav { gap: 10px; }
   .nav-link { font-size: 10px; }
   .topbar-actions { gap: 9px; }
   .account-link { font-size: 10px; }
   .cart-button > span:first-child { display: none; }
+}
+
+@media (max-width: 390px) {
+  .app-shell { padding-inline: 13px; }
+  .intro-band { margin-inline: -13px; padding-inline: 13px; }
   .product-grid { grid-template-columns: 1fr; }
   .product-image-wrap { aspect-ratio: 1.35 / 1; }
   .product-title-row { align-items: baseline; flex-direction: row; }
