@@ -17,11 +17,11 @@ function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
     <article className="product-card">
       {/* Duplicate of the title link, kept for mouse/touch: out of the tab order and hidden from
           screen readers, so each card has one link. */}
-      <Link className="product-image-link" to={`/products/${product.id}`} tabIndex={-1} aria-hidden="true">
+      <Link className="product-image-link" to={`/products/${product.slug}`} tabIndex={-1} aria-hidden="true">
         <div className="product-image-wrap">
-          {product.image && (
+          {product.image_url && (
             <ProductImage
-              src={product.image}
+              src={product.image_url}
               alt={product.name}
               sizes={CARD_SIZES}
               eager={index < 2}
@@ -34,19 +34,19 @@ function ProductCard({ product, onAddToCart, index }: ProductCardProps) {
       </Link>
       <div className="product-details">
         <div className="product-title-row">
-          <h3><Link className="product-title-link" to={`/products/${product.id}`}>{product.name}</Link></h3>
+          <h3><Link className="product-title-link" to={`/products/${product.slug}`}>{product.name}</Link></h3>
           <span className="product-price">{product.price} €</span>
         </div>
         {product.description && <p>{product.description}</p>}
         <div className="product-actions">
-          <span className={product.inStock ? 'stock-status' : 'stock-status is-out'}>
+          <span className={product.in_stock ? 'stock-status' : 'stock-status is-out'}>
             <span aria-hidden="true" />
-            {product.inStock ? 'En stock' : 'Épuisé'}
+            {product.in_stock ? 'En stock' : 'Épuisé'}
           </span>
           <button
             className="add-button"
             type="button"
-            disabled={!product.inStock}
+            disabled={!product.in_stock}
             onClick={() => onAddToCart(product.id)}
           >
             Ajouter au panier

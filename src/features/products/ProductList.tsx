@@ -1,23 +1,22 @@
 import { memo, type ReactNode } from 'react'
-import type { FetchResult, Product } from '@/types/ecommerce'
 import ProductCard from '@/features/products/ProductCard'
 import ProductCardPlaceholder from '@/features/products/ProductCardPlaceholder'
+import { useProducts } from '@/features/products/queries'
 
-// Placeholders shown while loading: the catalogue size (public/data/products.json), unless capped.
-const PLACEHOLDER_COUNT = 6
+// Placeholders shown while loading: the catalogue size (7 products), unless capped.
+const PLACEHOLDER_COUNT = 7
 
 type ProductListProps = {
-  result: FetchResult<Product[]>
   onAddToCart: (productId: string) => void
   maxItems?: number
 }
 
-function ProductList({ result, onAddToCart, maxItems }: ProductListProps) {
+function ProductList({ onAddToCart, maxItems }: ProductListProps) {
+  const result = useProducts()
   let content: ReactNode
 
   switch (result.status) {
-    case 'idle':
-    case 'loading':
+    case 'pending':
       content = (
         <>
           <p className="visually-hidden" role="status">Chargement des produits…</p>
@@ -28,7 +27,7 @@ function ProductList({ result, onAddToCart, maxItems }: ProductListProps) {
       )
       break
     case 'error':
-      content = <p className="fetch-message error-message" role="alert">{result.message}</p>
+      content = <p className="fetch-message error-message" role="alert">{result.error.message}</p>
       break
     case 'success': {
       const products = maxItems === undefined ? result.data : result.data.slice(0, maxItems)
@@ -49,5 +48,6 @@ function ProductList({ result, onAddToCart, maxItems }: ProductListProps) {
 }
 
 // Memoized: the cart lives in App, so every cart change re-renders App's whole tree. The list's
-// props (fetch result, stable onAddToCart) don't change with the cart, so it and its cards skip.
+// props (stable onAddToCart, maxItems) don't change with the cart, so it and its cards skip.
+// It still re-renders when its own query changes, since useProducts() subscribes to the cache.
 export default memo(ProductList)

@@ -1,27 +1,14 @@
-import type { CartLine } from '@/types/ecommerce'
-
 export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'cancelled'
 
+// Mirrors a row of the `orders` table (supabase/01-schema.sql). The products of an order are rows
+// of `order_items`, read with a nested select from milestone 3.
 export interface Order {
   id: string
-  customerEmail: string
-  items: CartLine[]
-  total: number
+  user_id: string | null
   status: OrderStatus
-  createdAt: Date
-  paymentRef?: string
-  carrier?: string
-  cancellationReason?: string
+  created_at: string // timestamptz arrives as an ISO 8601 string
 }
-
-export type OrderEvent =
-  | { type: 'place' }
-  | { type: 'pay'; paymentRef: string }
-  | { type: 'ship'; carrier: string }
-  | { type: 'cancel'; reason: string }
-
-export type OrderSummary = Pick<Order, 'id' | 'customerEmail' | 'total'>
-export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'createdAt'>>
+export type UpdateOrderInput = Partial<Omit<Order, 'id' | 'created_at'>>
 export type OrdersByStatus = Record<OrderStatus, Order[]>
 
 export const carriers = {
@@ -41,23 +28,6 @@ export function labelStatus(status: OrderStatus): string {
       return 'Annulée'
     default: {
       const _exhaustive: never = status
-      return _exhaustive
-    }
-  }
-}
-
-export function applyEvent(order: Order, event: OrderEvent): Order {
-  switch (event.type) {
-    case 'place':
-      return { ...order, status: 'pending' }
-    case 'pay':
-      return { ...order, status: 'paid', paymentRef: event.paymentRef }
-    case 'ship':
-      return { ...order, status: 'shipped', carrier: event.carrier }
-    case 'cancel':
-      return { ...order, status: 'cancelled', cancellationReason: event.reason }
-    default: {
-      const _exhaustive: never = event
       return _exhaustive
     }
   }

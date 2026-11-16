@@ -1,12 +1,15 @@
+// Mirrors a row of the `products` table (supabase/01-schema.sql). Nullable columns come back as
+// null, not undefined.
 export interface Product {
   id: string
+  slug: string
   name: string
   price: number
-  inStock: boolean
-  category?: string
-  description?: string
-  image?: string
-  badge?: string
+  in_stock: boolean
+  category: string | null
+  description: string | null
+  image_url: string | null
+  badge: string | null
 }
 
 export type CartLine = { productId: string; quantity: number }
@@ -68,10 +71,3 @@ export type CreateProductInput = Omit<Product, 'id'>
 
 // Use this type for the product editing form.
 export type UpdateProductInput = Partial<CreateProductInput>
-
-// Use this type for the cart, indexed by product ID.
-export type FetchResult<T> =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; message: string }

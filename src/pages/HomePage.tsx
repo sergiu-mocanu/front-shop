@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom'
 import CartPanel from '@/components/CartPanel'
 import ProductList from '@/features/products/ProductList'
-import type { Cart, FetchResult, Product } from '@/types/ecommerce'
+import type { Cart } from '@/types/ecommerce'
 
 type HomePageProps = {
   cart: Cart
-  products: Product[]
-  productsResult: FetchResult<Product[]>
   onAddToCart: (productId: string) => void
   onRemoveFromCart: (productId: string) => void
   onClearCart: () => void
@@ -14,8 +12,6 @@ type HomePageProps = {
 
 function HomePage({
   cart,
-  products,
-  productsResult,
   onAddToCart,
   onRemoveFromCart,
   onClearCart,
@@ -49,11 +45,10 @@ function HomePage({
             </div>
             <Link className="sort-label" to="/products">Toute la collection <span aria-hidden="true">↗</span></Link>
           </div>
-          <ProductList result={productsResult} onAddToCart={onAddToCart} maxItems={4} />
+          <ProductList onAddToCart={onAddToCart} maxItems={4} />
         </section>
         <CartPanel
           cart={cart}
-          products={products}
           onRemove={onRemoveFromCart}
           onClear={onClearCart}
         />

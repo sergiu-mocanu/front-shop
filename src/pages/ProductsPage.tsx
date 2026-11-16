@@ -1,11 +1,9 @@
 import CartPanel from '@/components/CartPanel'
 import ProductList from '@/features/products/ProductList'
-import type { Cart, FetchResult, Product } from '@/types/ecommerce'
+import type { Cart } from '@/types/ecommerce'
 
 type ProductsPageProps = {
   cart: Cart
-  products: Product[]
-  productsResult: FetchResult<Product[]>
   onAddToCart: (productId: string) => void
   onRemoveFromCart: (productId: string) => void
   onClearCart: () => void
@@ -13,8 +11,6 @@ type ProductsPageProps = {
 
 function ProductsPage({
   cart,
-  products,
-  productsResult,
   onAddToCart,
   onRemoveFromCart,
   onClearCart,
@@ -36,11 +32,10 @@ function ProductsPage({
               <h2 id="products-title">Tous les produits</h2>
             </div>
           </div>
-          <ProductList result={productsResult} onAddToCart={onAddToCart} />
+          <ProductList onAddToCart={onAddToCart} />
         </section>
         <CartPanel
           cart={cart}
-          products={products}
           onRemove={onRemoveFromCart}
           onClear={onClearCart}
         />

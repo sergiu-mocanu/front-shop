@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fffefa" />
     <meta name="description" content="Une sélection d'objets utiles et bien pensés pour le quotidien." />
-    <!-- LCP chain (JS → products.json → Unsplash image): fetch the data in parallel with the JS,
-         and open the image server's connection early. -->
-    <link rel="preload" href="/data/products.json" as="fetch" crossorigin />
+    <!-- LCP chain (JS → Supabase query → Unsplash image): open both servers' connections while the
+         JS downloads. Supabase is called with CORS (cross-origin fetch), hence crossorigin. -->
+    <link rel="preconnect" href="%VITE_SUPABASE_URL%" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />

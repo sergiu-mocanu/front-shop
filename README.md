@@ -1,20 +1,32 @@
 # Maison Moderne
 
-A demo shop built with React and strict TypeScript. The catalogue and orders are loaded from the
-static JSON files in `public/data/`; no API server is needed. The UI is in French.
+A demo shop built with React and strict TypeScript. The catalogue and orders live in a Supabase
+(hosted Postgres) database, read with React Query; the SQL is in `supabase/`. The UI is in French.
 
 ## Getting started
 
-```sh
-npm install
-npm run dev
-```
+1. In a Supabase project, run `supabase/01-schema.sql` then `supabase/02-seed-products.sql` in the
+   SQL editor.
+2. Create `.env` at the repo root (it is git-ignored) with the project URL and its anon key, from
+   Project Settings > API Keys:
+
+   ```sh
+   VITE_SUPABASE_URL=https://xxxxx.supabase.co
+   VITE_SUPABASE_ANON_KEY=...
+   ```
+
+3. Install and start:
+
+   ```sh
+   npm install
+   npm run dev
+   ```
 
 ## Routes
 
 - `/`: home page and product selection
 - `/products`: full catalogue
-- `/products/:id`: product detail
+- `/products/:slug`: product detail (e.g. `/products/lampe-aria`)
 - `/orders`: order list, grouped by status
 - Any other URL: 404 page
 
