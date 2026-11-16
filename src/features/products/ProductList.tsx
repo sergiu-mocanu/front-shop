@@ -1,6 +1,10 @@
 import { memo, type ReactNode } from 'react'
 import type { FetchResult, Product } from '@/types/ecommerce'
 import ProductCard from '@/features/products/ProductCard'
+import ProductCardPlaceholder from '@/features/products/ProductCardPlaceholder'
+
+// Placeholders shown while loading: the catalogue size (public/data/products.json), unless capped.
+const PLACEHOLDER_COUNT = 6
 
 type ProductListProps = {
   result: FetchResult<Product[]>
@@ -14,7 +18,14 @@ function ProductList({ result, onAddToCart, maxItems }: ProductListProps) {
   switch (result.status) {
     case 'idle':
     case 'loading':
-      content = <p className="fetch-message" role="status">Chargement des produits…</p>
+      content = (
+        <>
+          <p className="visually-hidden" role="status">Chargement des produits…</p>
+          {Array.from({ length: maxItems ?? PLACEHOLDER_COUNT }, (_, index) => (
+            <ProductCardPlaceholder key={index} />
+          ))}
+        </>
+      )
       break
     case 'error':
       content = <p className="fetch-message error-message" role="alert">{result.message}</p>

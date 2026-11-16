@@ -220,6 +220,13 @@
 .product-image-wrap { position: relative; aspect-ratio: 1.32 / 1; overflow: hidden; background: #e9e8e0; }
 .product-image { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 400ms cubic-bezier(.2,.7,.2,1); }
 .product-card:hover .product-image { transform: scale(1.045); }
+.product-card.is-placeholder { animation: none; }
+/* While a lazy page loads: fill the screen so the footer starts below it and doesn't shift. */
+.page-fallback { min-height: 100vh; }
+.is-placeholder .product-title-row h3 { width: 55%; background: #efeee8; }
+.is-placeholder .product-price { width: 40px; background: #efeee8; }
+.is-placeholder .product-details > p { width: 85%; background: #f4f3ee; }
+.is-placeholder .add-button { width: 110px; }
 .product-badge, .product-category { position: absolute; top: 12px; padding: 6px 8px; background: rgba(255,255,255,.93); color: var(--ink); font-size: 9px; line-height: 1; }
 .product-badge { left: 12px; }
 .product-category { right: 12px; color: var(--muted); }
@@ -349,3 +356,6 @@
   .product-image-wrap { aspect-ratio: 1.35 / 1; }
   .product-title-row { align-items: baseline; flex-direction: row; }
 }
+
+/* Hidden visually, still read by screen readers. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

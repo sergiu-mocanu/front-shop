@@ -82,6 +82,11 @@ manual clicks, so renders were counted with a temporary counter in each componen
 DevTools Protocol: load `/products`, click "Ajouter au panier" 3 times, read the counters. The
 remaining `SiteFooter` renders (3) aren't worth a `memo()`: static and trivial to render.
 
+Notes on fix 4b: with the grid's height reserved, `/products` still shifted (0.109), now on the
+footer: since fix 3, the one-line `Suspense` fallback leaves the footer high while the page chunk
+downloads. A full-height fallback keeps it below the viewport, where moves don't count. No shimmer
+animation on the placeholders: decorative animation is what eco-design removes.
+
 | # | Axis | Commit | Fix | Metric | Before | After |
 |---|---|---|---|---|---|---|
 | 1 | Perf — images | `perf: responsive, lazy-loaded product images` | `srcset` 400/800/1200 w + `sizes` (was one 900 px file for every screen); `loading="lazy"` after the first 2 cards; `fetchPriority="high"` on the first; `decoding="async"` | Weight `/` · `/products` | 362 · 490 KiB | 246 · 286 KiB |
@@ -104,5 +109,8 @@ remaining `SiteFooter` renders (3) aren't worth a `memo()`: static and trivial t
 | | | | | Requests (EcoIndex) | 10 · 12 | 11 · 14 (score unchanged: A 88 · A 86) |
 | 4 | Perf — re-renders | `perf: skip product list re-renders on cart changes` | `useCallback` for the cart actions in `useCart` (stable props), then `memo(ProductList)`; the state can't move lower than `App`, the only common parent of the header and the cart panel | Renders for 3 add-to-cart clicks on `/products` | 36 (24 unneeded: `ProductList` ×3, `ProductCard` ×18, `SiteFooter` ×3) | 15 (`ProductList` and `ProductCard`: 0) |
 | | | | | TBT `/` · `/products` | 0 · 0 ms | 0 · 0 ms (no lab metric can move) |
+| 4b | Perf — layout stability (extra, outside the 4 axes) | `perf: reserve space while content loads` | While `products.json` loads, the grid shows placeholder cards built from the real card's markup and classes (same size at every breakpoint; loading still announced to screen readers); the `Suspense` fallback of lazy pages fills the screen so the footer starts below it | CLS `/` · `/products` | 0.160 · 0.109 | 0.000 · 0.000 |
+| | | | | Perf `/` · `/products` | 89 · 93 | 96 · 95 |
+| | | | | LCP `/` · `/products` | 2.8 · 2.7 s | 2.8 · 2.9 s (within noise) |
 | 5 | Accessibility | | | | | |
 | 6 | Eco-design | | | | | |

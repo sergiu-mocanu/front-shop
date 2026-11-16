@@ -43,7 +43,7 @@ function App() {
         activePage={activePage}
         cartCount={itemCount}
       />
-      <Suspense fallback={<p className="fetch-message" role="status">Chargement…</p>}>
+      <Suspense fallback={<main className="page-fallback"><p className="fetch-message" role="status">Chargement…</p></main>}>
         <Routes>
           <Route path="/" element={<HomePage {...pageProps} />} />
           <Route path="/products" element={<ProductsPage {...pageProps} />} />
