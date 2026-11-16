@@ -16,12 +16,18 @@ type AuthFormProps = {
 
 // The page shared by /login and /signup: same fields, same error display, same redirect.
 function AuthForm({ title, submitLabel, passwordAutoComplete, onSubmit, children }: AuthFormProps) {
-  const { session } = useAuth()
+  const { session, booted } = useAuth()
   const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+
+  // Same wait as ProtectedRoute: without it, a logged-in user opening /login would see the form
+  // flash before the redirect.
+  if (!booted) {
+    return <main className="page-fallback"><p className="fetch-message" role="status">Chargement…</p></main>
+  }
 
   // Logged in (just now, or already): go to the page that sent us here, else the account page.
   // No navigate() after a successful submit: the new session reaches the Context through

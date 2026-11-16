@@ -8,7 +8,7 @@ type SiteHeaderProps = {
 }
 
 function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
-  const { session } = useAuth()
+  const { session, booted } = useAuth()
 
   return (
     <header className="topbar">
@@ -28,7 +28,10 @@ function SiteHeader({ activePage, cartCount }: SiteHeaderProps) {
         </Link>
       </nav>
       <div className="topbar-actions">
-        {session ? (
+        {/* Until the first session read, the user is unknown: show neither "Compte" nor
+            "Connexion", or a logged-in user would see "Connexion" flash on every reload. The cart
+            is the last item of a right-aligned row, so it doesn't move when the link appears. */}
+        {!booted ? null : session ? (
           <>
             {/* The email on desktop; "Compte" on phones, where the email doesn't fit (CSS). */}
             <Link
