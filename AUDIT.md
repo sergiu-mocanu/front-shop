@@ -69,6 +69,13 @@ Notes on fix 2: LCP on `/` is a product image, which waits for JS → `products.
 aren't in that chain, so it stays within noise. Font bytes are unchanged (same files, now
 same-origin); the gain is the removed connections and request chain.
 
+Notes on fix 3: source-map-explorer shows the bundle is almost entirely libraries (React DOM, React
+Router); each page weighs 0.5–2.7 kB, so splitting them barely shrinks what the home page loads,
+and the bundler moved the shared `jsx-runtime` into its own chunk (+1 request on every page). The
+CLS drop on `/products` is a timing side effect, not a fix: while the page chunk downloads,
+`products.json` usually arrives too, so the grid renders at once instead of replacing a loading
+message. Lesson: code-splitting pays off for heavy pages; here the weight is in shared libraries.
+
 | # | Axis | Commit | Fix | Metric | Before | After |
 |---|---|---|---|---|---|---|
 | 1 | Perf — images | `perf: responsive, lazy-loaded product images` | `srcset` 400/800/1200 w + `sizes` (was one 900 px file for every screen); `loading="lazy"` after the first 2 cards; `fetchPriority="high"` on the first; `decoding="async"` | Weight `/` · `/products` | 362 · 490 KiB | 246 · 286 KiB |
@@ -82,7 +89,13 @@ same-origin); the gain is the removed connections and request chain.
 | | | | | Perf `/` · `/products` | 89 · 76 | 89 · 80 |
 | | | | | Requests `/` · `/products` (Lighthouse) | 12 · 14 | 11 · 13 |
 | | | | | Requests (EcoIndex) | 13 · 15 | 10 · 12 (score unchanged: A 88 · A 86) |
-| 3 | Perf — code-splitting | | | | | |
+| 3 | Perf — code-splitting | `perf: lazy-load secondary pages` | `React.lazy` + `Suspense` for `/products`, `/products/:id`, `/orders` and the 404 page; the home page (entry point) stays in the main bundle | Main bundle (gzip) | 86.1 kB | 82.4 kB + 3.3 kB shared `jsx-runtime` chunk |
+| | | | | Unused JS on `/` (est.) | 42 KiB | 38 KiB |
+| | | | | Perf `/` · `/products` | 89 · 80 | 89 · 93 |
+| | | | | CLS `/` · `/products` | 0.160 · 0.333 | 0.160 · 0.109 |
+| | | | | LCP `/` · `/products` | 2.8 · 2.6 s | 2.8 · 2.8 s |
+| | | | | Requests `/` · `/products` (Lighthouse) | 11 · 13 | 12 · 15 |
+| | | | | Requests (EcoIndex) | 10 · 12 | 11 · 14 (score unchanged: A 88 · A 86) |
 | 4 | Perf — re-renders | | | | | |
 | 5 | Accessibility | | | | | |
 | 6 | Eco-design | | | | | |

@@ -3,13 +3,18 @@ import SiteHeader from '@/components/SiteHeader'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { useFetch } from '@/hooks/useFetch'
 import { useCart } from '@/hooks/useCart'
+import { lazy, Suspense } from 'react'
 import HomePage from '@/pages/HomePage'
-import NotFoundPage from '@/pages/NotFoundPage'
-import OrdersPage from '@/pages/OrdersPage'
-import ProductDetailPage from '@/pages/ProductDetailPage'
-import ProductsPage from '@/pages/ProductsPage'
 import type { Product } from '@/types/ecommerce'
 import '@/App.css'
+
+// Code-splitting: each secondary page is its own chunk, downloaded on first visit.
+// The home page stays in the main bundle: it is the entry point, so lazy-loading it would add a
+// round-trip (main bundle, then home chunk) to the most visited page.
+const ProductsPage = lazy(() => import('@/pages/ProductsPage'))
+const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage'))
+const OrdersPage = lazy(() => import('@/pages/OrdersPage'))
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function App() {
   const { cart, itemCount, addToCart, removeFromCart, clearCart } = useCart()
@@ -38,13 +43,15 @@ function App() {
         activePage={activePage}
         cartCount={itemCount}
       />
-      <Routes>
-        <Route path="/" element={<HomePage {...pageProps} />} />
-        <Route path="/products" element={<ProductsPage {...pageProps} />} />
-        <Route path="/products/:id" element={<ProductDetailPage {...pageProps} />} />
-        <Route path="/orders" element={<OrdersPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <Suspense fallback={<p className="fetch-message" role="status">Chargement…</p>}>
+        <Routes>
+          <Route path="/" element={<HomePage {...pageProps} />} />
+          <Route path="/products" element={<ProductsPage {...pageProps} />} />
+          <Route path="/products/:id" element={<ProductDetailPage {...pageProps} />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
       <SiteFooter />
     </div>
   )
