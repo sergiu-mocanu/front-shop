@@ -25,10 +25,16 @@ Each fix is its own commit (`perf:`, `a11y:`, `eco:`), and that commit updates t
 FCP = First Contentful Paint · LCP = Largest Contentful Paint · TBT = Total Blocking Time ·
 CLS = Cumulative Layout Shift · SI = Speed Index.
 
-| Page | EcoIndex before | EcoIndex after |
-|---|---|---|
-| `/` | | |
-| `/products` | | |
+EcoIndex: `ecoindex-cli` 2.32 (EcoIndex method 5.10), desktop window 1920×1080. The score (out of
+100, graded A–G) weighs DOM size ×3, requests ×2 and transferred weight ×1. GHG = greenhouse gas
+emissions per page view.
+
+| Page | Measure | Grade | Score | DOM elements | Requests | Weight | GHG | Water |
+|---|---|---|---|---|---|---|---|---|
+| `/` | before | A | 88 | 130 | 13 | 374 KB | 1.24 gCO₂e | 1.86 cl |
+| `/` | after | | | | | | | |
+| `/products` | before | A | 86 | 154 | 15 | 505 KB | 1.28 gCO₂e | 1.92 cl |
+| `/products` | after | | | | | | | |
 
 ## Baseline findings
 
