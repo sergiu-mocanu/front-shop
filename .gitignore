@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 coverage/
+# Playwright: HTML report and per-test failure artefacts
+playwright-report*/
+test-results/
 
 # Local environment files
 .env*
