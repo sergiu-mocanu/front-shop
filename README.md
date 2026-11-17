@@ -53,12 +53,19 @@ Strict mode is enabled in `tsconfig.app.json`. Catalogue images and fonts are lo
 ```sh
 npm test                 # Vitest: unit and component tests (jsdom, Supabase mocked)
 npm run test:watch       # same, rerun on every save
-npm run test:e2e         # Playwright: the catalogue -> cart journey in Chromium, real Supabase
+npm run test:e2e         # Playwright: catalogue -> cart and login journeys in Chromium, real Supabase
 npm run test:coverage    # coverage report: terminal table + coverage/index.html
 ```
 
-The e2e test starts the dev server itself (or reuses one on port 5173). On a new machine, install
-its browser once: `npx playwright install chromium`.
+The e2e tests start the dev server themselves (or reuse one on port 5173). On a new machine,
+install their browser once: `npx playwright install chromium`.
+
+The login journey (`e2e/auth.spec.ts`) needs a test account in `.env`; without it, it is skipped:
+
+```sh
+E2E_EMAIL=...      # an existing customer account (not an admin)
+E2E_PASSWORD=...
+```
 
 ### Coverage
 

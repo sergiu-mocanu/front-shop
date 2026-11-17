@@ -1,5 +1,13 @@
 import { defineConfig } from '@playwright/test'
 
+// Loads .env (git-ignored) into process.env, for the login journey's E2E_EMAIL / E2E_PASSWORD.
+// Built into Node (20.12+): no dotenv package. A missing file is fine: that test then skips itself.
+try {
+  process.loadEnvFile()
+} catch {
+  // no .env: nothing to load
+}
+
 // End-to-end tests: a real browser drives the real app (dev server) against the real Supabase.
 export default defineConfig({
   testDir: 'e2e',
