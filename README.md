@@ -43,9 +43,37 @@ Routes use React Router to navigate without reloading the page.
 npx tsc --noEmit -p tsconfig.app.json
 npm run build
 npm run lint
+npm test
 ```
 
 Strict mode is enabled in `tsconfig.app.json`. Catalogue images and fonts are loaded from the web.
+
+## Tests
+
+```sh
+npm test                 # Vitest: unit and component tests (jsdom, Supabase mocked)
+npm run test:watch       # same, rerun on every save
+npm run test:e2e         # Playwright: the catalogue -> cart journey in Chromium, real Supabase
+npm run test:coverage    # coverage report: terminal table + coverage/index.html
+```
+
+The e2e test starts the dev server itself (or reuses one on port 5173). On a new machine, install
+its browser once: `npx playwright install chromium`.
+
+### Coverage
+
+Coverage says which code the tests *ran*, not what they *checked*: a detector of untested areas,
+not a target. The e2e journey is not counted (it runs in a separate browser).
+
+| Date | Lines | Statements | Functions | Branches |
+|---|---|---|---|---|
+| 2026-11-17 | 32.5 % | 31.7 % | 27.7 % | 17.8 % |
+
+Next test, chosen for risk rather than score: `orderTotal` (`src/types/orders.ts`, 0 %). It is the
+amount of money shown to customers (My orders) and to the admin (Orders), and it is a pure
+function, so the test is cheap. Higher-scoring but lower-value candidates were left for later: the
+checkout hook (its logic lives in SQL), `slugify` (admin only, duplicates rejected by the
+database), the route guards (comfort only; RLS protects the data).
 
 ## Audit
 
