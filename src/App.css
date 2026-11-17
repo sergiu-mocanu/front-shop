@@ -26,6 +26,8 @@
 .shop-layout { display: grid; grid-template-columns: minmax(0, 1fr) 275px; gap: 50px; padding: 45px 0 60px; }
 .section-heading, .cart-panel-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 23px; }
 .section-heading .eyebrow, .cart-panel-heading .eyebrow { margin-bottom: 7px; }
+.catalog-section .section-heading { flex-wrap: wrap; gap: 16px; }
+.catalog-search { width: min(100%, 260px); }
 .section-heading h2, .cart-panel-heading h2 { margin: 0; color: var(--ink); font-family: var(--display); font-size: 27px; font-weight: 500; }
 .heading-count { margin-left: 4px; color: var(--coral); font-family: var(--body); font-size: 10px; font-weight: 700; vertical-align: super; }
 .sort-label { padding-bottom: 3px; color: var(--muted); font-size: 11px; }

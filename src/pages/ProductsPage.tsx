@@ -1,8 +1,19 @@
+import { useSearchParams } from 'react-router-dom'
 import CartPanel from '@/components/CartPanel'
 import ProductList from '@/features/products/ProductList'
 
-
 function ProductsPage() {
+  // The search lives in the URL (/products?search=lampe), not in a useState: a reload, a shared
+  // link or the back button keep it.
+  const [searchParams, setSearchParams] = useSearchParams()
+  const search = searchParams.get('search') ?? ''
+
+  function handleSearchChange(value: string) {
+    // replace: one history entry for the whole typing, not one per key. An empty field removes
+    // the parameter, so the plain /products URL stays clean.
+    setSearchParams(value === '' ? {} : { search: value }, { replace: true })
+  }
+
   return (
     <main className="products-page">
       <section className="intro-band products-intro">
@@ -19,8 +30,16 @@ function ProductsPage() {
               <p className="eyebrow">La boutique</p>
               <h2 id="products-title">Tous les produits</h2>
             </div>
+            <label className="form-field catalog-search">
+              Rechercher un produit
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => handleSearchChange(event.target.value)}
+              />
+            </label>
           </div>
-          <ProductList />
+          <ProductList search={search} />
         </section>
         <CartPanel />
       </div>
