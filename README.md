@@ -75,6 +75,8 @@ function, so the test is cheap. Higher-scoring but lower-value candidates were l
 checkout hook (its logic lives in SQL), `slugify` (admin only, duplicates rejected by the
 database), the route guards (comfort only; RLS protects the data).
 
+Done right after this measure: `src/types/orders.test.ts` (3 tests, each seen red).
+
 ## Audit
 
 Performance, accessibility and eco-design audit (Lighthouse before/after, one commit per axis):
