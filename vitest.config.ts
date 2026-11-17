@@ -14,7 +14,7 @@ export default mergeConfig(
         provider: 'v8', // V8 (the JS engine in Node and Chrome) records which code each test ran
         reporter: ['text', 'html', 'lcov'], // terminal table, coverage/index.html, lcov for CI tools
         include: ['src/**/*.{ts,tsx}'], // every source file, tested or not: untested ones show 0 %
-        exclude: ['src/**/*.d.ts', 'src/test/**', 'src/main.tsx', 'src/**/*.test.{ts,tsx}'],
+        exclude: ['src/**/*.d.ts', 'src/test/**', 'src/main.tsx', 'src/**/*.test.{ts,tsx}', 'src/**/*.stories.tsx'],
       },
     },
   }),

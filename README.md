@@ -67,6 +67,15 @@ E2E_EMAIL=...      # an existing customer account (not an admin)
 E2E_PASSWORD=...
 ```
 
+### Storybook
+
+```sh
+npm run storybook        # component catalogue on http://localhost:6006
+```
+
+Stories sit next to their component (`*.stories.tsx`); each story is one state of the component
+(e.g. `ProductCard`: standard, very long name). The a11y panel runs axe on the open story.
+
 ### Coverage
 
 Coverage says which code the tests *ran*, not what they *checked*: a detector of untested areas,
