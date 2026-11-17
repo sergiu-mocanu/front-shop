@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useSaveProduct } from '@/features/products/queries'
 import type { CreateProductInput, Product } from '@/types/ecommerce'
+import { stripAccents } from '@/lib/text'
 
 type ProductFormProps = {
   /** The product to edit; absent to create one. */
@@ -48,8 +49,7 @@ function toInput(values: FormValues): CreateProductInput {
 
 // "Carafe Rosée" -> "carafe-rosee": accents stripped, anything else becomes a dash.
 function slugify(text: string): string {
-  return text
-    .normalize('NFD').replace(/[̀-ͯ]/g, '') // é = e + accent mark: drop the mark
+  return stripAccents(text)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
