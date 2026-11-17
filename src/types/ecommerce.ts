@@ -32,6 +32,8 @@ export type Cart = Record<string, CartLine>
 export function applyAction(cart: Cart, action: CartAction): Cart {
   switch (action.type) {
     case 'addToCart': {
+      // Adding nothing (or a negative amount) leaves the cart as it is: no empty line.
+      if (action.quantity <= 0) return cart
       const existing = cart[action.productId]
       return {
         ...cart,

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
+import { computeCartTotal } from '@/features/cart/cart'
 import { useCart } from '@/features/cart/store'
 import { usePlaceOrder } from '@/features/orders/queries'
 import { useProducts } from '@/features/products/queries'
@@ -17,8 +18,7 @@ function CartPanel() {
   const itemCount = lines.reduce((total, line) => total + line.quantity, 0)
   const findProduct = (productId: string) => products.find((product) => product.id === productId)
   const getProductName = (productId: string) => findProduct(productId)?.name ?? productId
-  // Indicative total from the catalogue; the order itself is priced by the database.
-  const total = lines.reduce((sum, line) => sum + (findProduct(line.productId)?.price ?? 0) * line.quantity, 0)
+  const total = computeCartTotal(lines, products)
 
   return (
     <aside className="cart-panel" id="basket" aria-labelledby="cart-title">
