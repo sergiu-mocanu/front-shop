@@ -1,14 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { filterProducts } from './search'
+import { makeProduct as product } from '@/test/factories'
 import type { Product } from '@/types/ecommerce'
-
-function product(overrides: Partial<Product>): Product {
-  return {
-    id: '1', slug: 'p', name: 'Produit', price: 10, in_stock: true,
-    category: null, description: null, image_url: null, badge: null,
-    ...overrides,
-  }
-}
 
 const catalogue = [
   product({ id: '1', name: 'Lampe Aria', category: 'Lumière' }),

@@ -1,15 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { computeCartTotal } from './cart'
-import { applyAction, type Cart, type CartLine, type Product } from '@/types/ecommerce'
-
-// A complete Product with sensible defaults: each test only writes the fields it cares about.
-function product(overrides: Partial<Product>): Product {
-  return {
-    id: '1', slug: 'p', name: 'Produit', price: 10, in_stock: true,
-    category: null, description: null, image_url: null, badge: null,
-    ...overrides,
-  }
-}
+import { makeProduct as product } from '@/test/factories'
+import { applyAction, type Cart, type CartLine } from '@/types/ecommerce'
 
 describe('computeCartTotal', () => {
   const catalogue = [product({ id: '1', price: 10 }), product({ id: '2', price: 5 })]
