@@ -29,5 +29,5 @@ insert into products (slug, name, category, description, image_url, price, in_st
    32, false, null),
   ('carafe-rosee', 'Carafe Rosée', 'Art de la table',
    'Verre soufflé à la bouche, une teinte rosée qui capte la lumière.',
-   'https://images.unsplash.com/photo-1589807502973-c7be2ee95d99?auto=format&fit=crop&w=900&q=85',
+   'https://images.unsplash.com/photo-1743187360373-513ac4a7266f?auto=format&fit=crop&w=900&q=85',
    42, true, 'Nouveau');
