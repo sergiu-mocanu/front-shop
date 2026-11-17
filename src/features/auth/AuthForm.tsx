@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import type { AuthError } from '@supabase/supabase-js'
 import { useAuth } from './AuthContext'
+import { authErrorMessage } from './authErrors'
 
 type AuthFormProps = {
   title: string
@@ -43,7 +44,7 @@ function AuthForm({ title, submitLabel, passwordAutoComplete, onSubmit, children
     setError(null)
     const { error } = await onSubmit(email, password)
     setSubmitting(false)
-    if (error) setError(error.message) // shown, not swallowed (e.g. "Invalid login credentials")
+    if (error) setError(authErrorMessage(error)) // shown in French, not swallowed
   }
 
   return (

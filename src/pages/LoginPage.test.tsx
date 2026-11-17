@@ -7,7 +7,7 @@ import { renderWithProviders } from '@/test/utils'
 
 // vi.hoisted: created before vi.mock runs, so the test can also check how it was called.
 const { signInWithPassword } = vi.hoisted(() => ({
-  signInWithPassword: vi.fn(() => Promise.resolve({ error: { message: 'Invalid login credentials' } })),
+  signInWithPassword: vi.fn(() => Promise.resolve({ error: { code: 'invalid_credentials', message: 'Invalid login credentials' } })),
 }))
 
 // The fake covers what AuthProvider reads at start-up (no saved session) and the login call,
@@ -36,7 +36,7 @@ describe('LoginPage', () => {
     await user.type(screen.getByLabelText('Mot de passe'), 'wrong-password')
     await user.click(screen.getByRole('button', { name: 'Se connecter' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Invalid login credentials')
+    expect(await screen.findByRole('alert')).toHaveTextContent('E-mail ou mot de passe incorrect.')
   })
 
   it('does not send the form when the fields are empty', async () => {
